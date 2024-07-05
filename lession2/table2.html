@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin sinh viên</title>
+    <style>
+        thead, tr, td{
+            border: 2px solid gray;
+        };
+        #table{
+            margin: 20px;
+        };
+    </style>
+</head>
+<body>
+    <table id="table">
+        <thead>
+            <tr>
+                <td>STT</td>
+                <td>Tên</td>
+                <td>Lớp</td>
+                <td>Tuổi</td>
+                <td>Điểm</td>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+    
+        </tbody>
+    </table>
+    
+    <script>
+        var data = [
+            {no: 1, name: "Anh", class: "C1", age: 20, point: 9},
+            {no: 2, name:"Binh", class: "C3", age: 21, ponit: 8},
+            {no: 3, name:"Dinh", class: "B2", age: 20, point: 9},
+            {no: 4, name:"Lan", class: "D4", age: 19, point: 7},
+            {no: 5, name:"Thuy", class: "B5", age: 21, point: 8},
+        ];
+
+        var tableBody = document.getElementById("tableBody");
+
+        data.forEach(function(item) {
+            var row = document.createElement("tr");
+
+            var noCell = document.createElement("td");
+            noCell.textContent = item.no;
+            row.appendChild(noCell);
+
+            var nameCell = document.createElement("td");
+            nameCell.textContent = item.name;
+            row.appendChild("nameCell");
+
+            var classCell = document.createElement("td");
+            classCell.textContent = item.class;
+            row.appchild(classCell);
+
+            var ageCell = document.createElement("td");
+            ageCell.textContent = item.age;
+            row.appchild(ageCell);
+            
+            var pointCell = document.createElement("td");
+            pointCell.textContent = item.point;
+            row.appchild(pointCell);
+
+            tableBody.appendChild(row);
+
+        });
+
+    </script>
+</body>
+</html>
