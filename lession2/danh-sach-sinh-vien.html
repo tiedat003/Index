@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Danh sách sinh viên</title>
+    <style>
+       body{
+            background-color: rgb(193, 253, 233);
+            margin: 20px;
+        }
+        h2{
+            margin-bottom: 20px;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+        }
+        table, th, td{
+            border: 2px solid grey;
+        }
+        table{
+            width: 50%;
+            text-align: center;
+        }
+        #add{
+            margin-right: 10px;
+        }
+        .box{
+            padding:10px 0;
+            width: 100%;
+        }
+        .input-group-text{
+            width: 100px;
+        }
+        
+    </style>
+</head>
+<body>
+    <!--Header-->
+    <h2>Nhập thông tin vào bảng</h2>
+
+    <!--Body-->
+    <!-- Một `div` rỗng sẽ chứa danh sách sinh viên, được xác định bằng ID `student-list` -->
+    <!-- <div class="student-list" id="student-list"></div> -->
+
+    <form action="#" method="post" id="student-form">
+        <!-- Input ẩn để lưu trữ ID của sinh viên hiện tại -->
+        <input type="hidden" id="student-id">
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Name</span>
+            <input type="text" aria-label="Name" id="student-name" name="name" class="form-control">           
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Age</span>
+            <input type="number" aria-label="Age" id="student-age" name="age" class="form-control" min="0" max="120">
+        </div>
+    </form>    
+    <!--Footer-->
+    <div class="box">
+        <button type="button" class="btn btn-primary" onclick= "addStudent()" id="add">Add</button>
+        <button type="button" class="btn btn-success" onclick= "saveStudent()" id="save">Save</button>
+    </div>
+
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Tên</th>
+                <th>Tuổi</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <script>
+        // Mảng students chứa danh sách sinh viên với thuộc tính id, name và age
+        let students = [ ];
+
+        // Hàm displayStudent() để hiển thị bảng
+        function displayStudent() {
+            // Lấy thẻ tbody của bảng
+            const tableBody = document.querySelector("#studentTable tbody");
+            // Xóa nội dung cũ của tbody
+            tableBody.innerHTML = "";
+
+            // Duyệt qua mảng students để tạo từng hàng của bảng
+            students.forEach(student => {
+                // Tạo một thẻ <tr> mới cho mỗi sinh viên
+                const row = document.createElement("tr");
+            
+                // Tạo một thẻ <td> để chứa id và thêm vào hàng
+                const idCell = document.createElement("td");
+                idCell.textContent = student.id;
+                row.appendChild(idCell);
+
+                // Tạo một thẻ <td> để chứa tên và thêm vào hàng
+                const nameCell = document.createElement("td");
+                nameCell.textContent = student.name;
+                row.appendChild(nameCell);
+
+                // Tạo một thẻ <td> để chứa tuổi và thêm vào hàng
+                const ageCell = document.createElement("td");
+                ageCell.textContent = student.age;
+                row.appendChild(ageCell);
+
+                // Tạo một thẻ <td> để chứa nút sửa và xóa và thêm vào hàng
+                const actionCell = document.createElement("td");
+            
+                // Tạo nút sửa và gán sự kiện onclick
+                const edit_btn = document.createElement("button");
+                edit_btn.textContent = "Edit";
+                edit_btn.type="button";
+                edit_btn.classList.add ("btn", "btn-warning");
+                edit_btn.style.marginRight= "10px";
+                edit_btn.onclick = () => editStudent(student.id);
+                actionCell.appendChild(edit_btn);
+
+                // Tạo nút xóa và gán sự kiện onclick
+                const del_btn = document.createElement("button");
+                del_btn.textContent = "Delete";
+                del_btn.type="button";
+                del_btn.classList.add ("btn", "btn-danger");
+                del_btn.onclick = function () {
+                    let showDel = confirm("Are you sure you want to delete?");
+                    if (showDel) {
+                        deleteStudent(student.id);
+                    };
+                }
+                actionCell.appendChild(del_btn);
+
+                // Thêm thẻ actionCell (chứa nút sửa và xóa) vào hàng
+                row.appendChild(actionCell);
+
+                // Thêm hàng mới vào tbody của bảng
+                tableBody.appendChild(row);
+
+            });
+            // Ẩn nút "Save"
+            document.getElementById("save").disabled = true;
+            // Reset lại bảng khi nhập xong thông tin
+            document.getElementById("student-form").reset();
+        };
+
+        // Bắt đầu lắng nghe sự kiện 'input' trên phần tử có id là 'student-age'
+        document.getElementById('student-age').addEventListener('input', function (event) {
+
+            // Loại bỏ các ký tự không phải số
+            // Thay thế giá trị của ô input bằng chính nó sau khi loại bỏ các ký tự không phải số
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+
+    //Add
+        // Biến toàn cục để đếm số lượng sinh viên
+        var studentCount = 0;
+
+        // Định nghĩa hàm `addStudent` để hiển thị thông tin sinh viên trong form khi nhấn nút "Thêm"
+        function addStudent(){
+            var name = document.getElementById('student-name').value;
+            var age = parseInt(document.getElementById('student-age').value);
+            
+            // Kiểm tra tính hợp lệ của dữ liệu nhập vào
+            if (!name || !age) {
+                alert("Please enter valid name and age."); 
+                return; 
+            }
+
+            // Tăng biến đếm sinh viên lên một đơn vị
+            studentCount++;
+
+            let newStudent = {
+                id: studentCount,
+                name: name,
+                age: age
+            };
+            students.push(newStudent);
+
+            // Cập nhật bảng
+            displayStudent();
+        }
+
+    // Edit
+        // Định nghĩa hàm `editStudent` để hiển thị thông tin sinh viên trong form khi nhấn nút "Sửa"
+        function editStudent(id) {
+            // Tìm sinh viên với `id` tương ứng
+            const student = students.find(s => s.id === id);
+            // Nếu tìm thấy sinh viên
+            if (student) {
+                // Đặt giá trị `id` của sinh viên vào input ẩn
+                document.getElementById('student-id').value = student.id;
+                // Đặt tên của sinh viên vào input tên
+                document.getElementById('student-name').value = student.name;
+                // Đặt tuổi của sinh viên vào input tuổi
+                document.getElementById('student-age').value = student.age;
+            }
+            // Ẩn nút "Add", hiện nút "Save"
+            document.getElementById("add").disabled = true;
+            document.getElementById("save").disabled = false;
+        }
+
+    //Save
+        // Định nghĩa hàm `saveStudent` để lưu thông tin sinh viên khi nhấn nút "Lưu"
+        function saveStudent() {
+            // Lấy giá trị `id` từ input ẩn và chuyển đổi thành số nguyên
+            const id = parseInt(document.getElementById('student-id').value);
+            // Lấy giá trị tên từ input tên
+            const name = document.getElementById('student-name').value;
+            // Lấy giá trị tuổi từ input tuổi và chuyển đổi thành số nguyên
+            const age = parseInt(document.getElementById('student-age').value);
+
+            // Kiểm tra tính hợp lệ của dữ liệu nhập vào
+            if (!name || !age) {
+                alert("Please enter valid name and age."); 
+                return; 
+            }
+
+            // Tìm chỉ số của sinh viên trong mảng `students` dựa trên `id`
+            const studentIndex = students.findIndex(s => s.id === id);
+            // Nếu tìm thấy sinh viên
+            if (studentIndex !== -1) {
+                // Cập nhật tên của sinh viên
+                students[studentIndex].name = name;
+                // Cập nhật tuổi của sinh viên
+                students[studentIndex].age = age;
+                // Cập nhật lại hiển thị danh sách sinh viên
+                displayStudent();
+            }
+            // Hiện nút Add
+            document.getElementById("add").disabled = false;
+        }
+
+    //Delete
+        // Hàm deleteStudent() để xóa sinh viên
+        function deleteStudent(id) {
+            // Lọc ra mảng students chỉ bao gồm các sinh viên có id khác id được truyền vào
+            students = students.filter(student => student.id !== id);
+            displayStudent(); // Hiển thị lại bảng
+        }
+        displayStudent(); // Gọi hàm displayStudent() lần đầu để hiển thị danh sách sinh viên ban đầu
+    </script>
+
+</body>
+</html>

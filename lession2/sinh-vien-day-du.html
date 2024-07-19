@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <style>
+        /* CSS để định dạng bảng */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Gộp các đường viền của bảng */
+        }
+        th, td {
+            border: 1px solid black; /* Đặt viền cho các ô trong bảng */
+            padding: 8px; /* Thêm khoảng cách trong các ô */
+            text-align: left; /* Căn lề trái cho văn bản trong các ô */
+        }
+        th {
+            background-color: #f2f2f2; /* Màu nền cho các tiêu đề cột */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <!-- Input để nhập tên sinh viên -->
+        <input type="text" aria-label="Name" id="student-name" name="name" class="form-control" placeholder="Enter student name">
+        <!-- Input để nhập tuổi sinh viên -->
+        <input type="number" aria-label="Age" id="student-age" name="age" class="form-control" placeholder="Enter student age">
+        <!-- Nút để thêm sinh viên -->
+        <button onclick="addStudent()">Add Student</button>
+    </div>
+    <br>
+    <table id="student-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Các hàng sẽ được thêm vào đây bởi JavaScript -->
+        </tbody>
+    </table>
+    <script>
+        // Mảng chứa danh sách sinh viên ban đầu
+        let students = [
+            {id: 1, name: "Nguyễn Văn A", age: 20},
+            {id: 2, name: "Trần Thị B", age: 21},
+            {id: 3, name: "Lê Văn C", age: 22},
+            {id: 4, name: "Phạm Thị D", age: 23},
+            {id: 5, name: "Hoàng Văn E", age: 24},
+        ];
+
+        // Hàm hiển thị danh sách sinh viên trong bảng
+        function displayStudents() {
+            let tableBody = document.getElementById('student-table').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ""; // Xóa nội dung hiện tại của phần thân bảng
+            students.forEach(student => {
+                let row = tableBody.insertRow(); // Thêm một hàng mới vào bảng
+                row.insertCell(0).innerText = student.id; // Thêm ô chứa ID
+                row.insertCell(1).innerText = student.name; // Thêm ô chứa tên
+                row.insertCell(2).innerText = student.age; // Thêm ô chứa tuổi
+            });
+        }
+
+        // Hàm thêm sinh viên mới
+        function addStudent() {
+            let name = document.getElementById('student-name').value; // Lấy giá trị từ input tên
+            let age = parseInt(document.getElementById('student-age').value); // Lấy giá trị từ input tuổi và chuyển thành số nguyên
+
+            // Kiểm tra tính hợp lệ của dữ liệu nhập vào
+            if (!name || isNaN(age)) {
+                alert("Please enter valid name and age."); // Hiển thị thông báo nếu dữ liệu không hợp lệ
+                return; // Dừng hàm nếu dữ liệu không hợp lệ
+            }
+
+            let newStudent = {
+                id: students.length + 1, // Tạo ID mới dựa trên số lượng sinh viên hiện có
+                name: name,
+                age: age
+            };
+
+            students.push(newStudent); // Thêm sinh viên mới vào mảng
+
+            // Cập nhật bảng
+            displayStudents();
+        }
+
+        // Hiển thị danh sách sinh viên ban đầu khi trang được tải
+        displayStudents();
+    </script>
+</body>
+</html>

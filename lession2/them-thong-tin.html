@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thêm sinh viên</title>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+    form {
+        margin-bottom: 20px;
+    }
+    form input[type="text"] {
+        padding: 5px;
+        width: 200px;
+    }
+    form input[type="submit"] {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h2>Thêm sinh viên</h2>
+
+<form id="add-student-form">
+    <input type="text" id="fullname" placeholder="Họ và tên" required>
+    <input type="text" id="age" placeholder="Tuổi" required>
+    <input type="text" id="gender" placeholder="Giới tính" required>
+    <input type="submit" value="Thêm sinh viên">
+</form>
+
+<table id="student-table">
+    <thead>
+        <tr>
+            <th>Họ và tên</th>
+            <th>Tuổi</th>
+            <th>Giới tính</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    // Danh sách sinh viên ban đầu
+    const initialStudents = [
+        { fullname: 'Nguyễn Văn A', age: 20, gender: 'Nam' },
+        { fullname: 'Trần Thị B', age: 22, gender: 'Nữ' },
+        { fullname: 'Lê Văn C', age: 21, gender: 'Nam' },
+        { fullname: 'Phạm Thị D', age: 23, gender: 'Nữ' },
+        { fullname: 'Hoàng Văn E', age: 24, gender: 'Nam' }
+    ];
+
+    // Lấy tbody của bảng từ DOM
+    const studentTableBody = document.getElementById('student-table').getElementsByTagName('tbody')[0];
+    const addStudentForm = document.getElementById('add-student-form');
+
+    // Hàm để thêm sinh viên vào bảng
+    function addStudentToTable(fullname, age, gender) {
+        // Tạo một hàng mới dưới dạng chuỗi HTML
+        const newRowHtml = `
+            <tr>
+                <td>${fullname}</td>
+                <td>${age}</td>
+                <td>${gender}</td>
+            </tr>
+        `;
+        // Thêm hàng mới vào bảng
+        studentTableBody.innerHTML += newRowHtml;
+    }
+
+    // Thêm các sinh viên ban đầu vào bảng
+    initialStudents.forEach(student => {
+        addStudentToTable(student.fullname, student.age, student.gender);
+    });
+
+    // Xử lý sự kiện khi nộp biểu mẫu
+    addStudentForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn việc gửi biểu mẫu đi
+
+        // Lấy giá trị từ các trường input
+        const fullname = document.getElementById('fullname').value;
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+
+        // Thêm sinh viên vào bảng
+        addStudentToTable(fullname, age, gender);
+
+        // Tạo một thẻ <td> để chứa nút xóa và thêm vào hàng
+        const actionCell = document.createElement("td");
+
+        // Tạo nút xóa và gán sự kiện onclick
+        const del_btn = document.createElement("button");
+        del_btn.textContent = "Delete";
+        del_btn.type="button";
+        del_btn.onclick = function () {
+            let showDel = confirm("Are you sure you want to delete?");
+            if (showDel) {
+                deleteStudent(student.id);
+            } else {
+            };
+        }
+        actionCell.appendChild(del_btn);
+
+        // Thêm thẻ actionCell (chứa nút sửa và xóa) vào hàng
+        row.appendChild(actionCell);
+
+        // Thêm hàng mới vào tbody của bảng
+        studentTableBody.appendChild(row);
+        });
+
+        // Đặt lại biểu mẫu
+        addStudentForm.reset();
+</script>
+
+</body>
+</html>

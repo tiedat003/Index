@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa Thông Tin Sinh Viên</title>
+
+    <style>
+        .student-list { margin-bottom: 20px; } 
+        .student { margin: 5px 0; } 
+    </style>
+
+</head>
+<body>
+    <!-- Một `div` rỗng sẽ chứa danh sách sinh viên, được xác định bằng ID `student-list` -->
+    <div class="student-list" id="student-list"></div>
+
+    <form id="student-form">
+        <!-- Input ẩn để lưu trữ ID của sinh viên hiện tại -->
+        <input type="hidden" id="student-id">
+        <div>
+            <label for="student-name">Tên:</label>
+            <input type="text" id="student-name">
+        </div>
+        <div>
+            <label for="student-age">Tuổi:</label>
+            <input type="number" id="student-age">
+        </div>
+        <!-- Nút bấm để lưu thông tin sinh viên, khi nhấn sẽ gọi hàm `saveStudent()` trong JavaScript -->
+        <button type="button" onclick="saveStudent()">Lưu</button>
+    </form>
+
+    <script>
+        // Khởi tạo mảng `students` chứa danh sách sinh viên với các thông tin `id`, `name` và `age`
+        let students = [
+            { id: 1, name: "Nguyễn Văn A", age: 20 },
+            { id: 2, name: "Trần Thị B", age: 21 },
+            { id: 3, name: "Lê Văn C", age: 22 },
+            { id: 4, name: "Phạm Thị D", age: 23 },
+            { id: 5, name: "Hoàng Văn E", age: 24 }
+        ];
+
+        // Định nghĩa hàm `addStudent` để hiển thị danh sách sinh viên
+        function addStudent() {
+            // Lấy phần tử `div` với ID `student-list`
+            const studentList = document.getElementById('student-list');
+            // Xóa nội dung hiện tại của `studentList`
+            studentList.innerHTML = '';
+
+            // Lặp qua từng sinh viên trong mảng `students`
+            students.forEach(student => {
+                // Tạo một `div` mới cho mỗi sinh viên
+                const studentDiv = document.createElement('div');
+                // Đặt lớp CSS cho `div` mới
+                studentDiv.className = 'student';
+                // Đặt nội dung HTML cho `div` mới, bao gồm tên, tuổi của sinh viên và nút "Sửa"
+                studentDiv.innerHTML = `
+                    ${student.name} (${student.age} tuổi) 
+                    <button onclick="editStudent(${student.id})">Sửa</button>
+                `;
+                // Thêm `div` mới vào `studentList`
+                studentList.appendChild(studentDiv);
+            });
+        }
+
+        // Định nghĩa hàm `editStudent` để hiển thị thông tin sinh viên trong form khi nhấn nút "Sửa"
+        function editStudent(id) {
+            // Tìm sinh viên với `id` tương ứng
+            const student = students.find(s => s.id === id);
+            // Nếu tìm thấy sinh viên
+            if (student) {
+                // Đặt giá trị `id` của sinh viên vào input ẩn
+                document.getElementById('student-id').value = student.id;
+                // Đặt tên của sinh viên vào input tên
+                document.getElementById('student-name').value = student.name;
+                // Đặt tuổi của sinh viên vào input tuổi
+                document.getElementById('student-age').value = student.age;
+            }
+        }
+
+        // Định nghĩa hàm `saveStudent` để lưu thông tin sinh viên khi nhấn nút "Lưu"
+        function saveStudent() {
+            // Lấy giá trị `id` từ input ẩn và chuyển đổi thành số nguyên
+            const id = parseInt(document.getElementById('student-id').value);
+            // Lấy giá trị tên từ input tên
+            const name = document.getElementById('student-name').value;
+            // Lấy giá trị tuổi từ input tuổi và chuyển đổi thành số nguyên
+            const age = parseInt(document.getElementById('student-age').value);
+
+            // Tìm chỉ số của sinh viên trong mảng `students` dựa trên `id`
+            const studentIndex = students.findIndex(s => s.id === id);
+            // Nếu tìm thấy sinh viên
+            if (studentIndex !== -1) {
+                // Cập nhật tên của sinh viên
+                students[studentIndex].name = name;
+                // Cập nhật tuổi của sinh viên
+                students[studentIndex].age = age;
+                // Cập nhật lại hiển thị danh sách sinh viên
+                addStudent();
+            }
+        }
+
+        // Gọi hàm `addStudent` để khởi tạo hiển thị danh sách sinh viên khi trang được tải
+        addStudent();
+
+    </script>
+</body>
+</html>
